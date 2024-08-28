@@ -27,9 +27,6 @@ def main():
     caminho_pdf = pasta_dados  # Ajuste para o caminho correto onde os PDFs são baixados
     lista_links = extrair_links(caminho_pdf)
 
-    ##################### filtrar para teste ############################
-    lista_links = lista_links[:500]
-
     # 7. Fazer scraping das informações das viagens
     df, lista_erros = fazer_scraping_viagens(driver, lista_links)
 

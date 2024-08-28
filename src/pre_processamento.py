@@ -1,4 +1,5 @@
 import pandas as pd
+import  time
 from geopy.geocoders import Nominatim
 
 def carregar_dados(caminho_arquivo):
@@ -81,20 +82,30 @@ def converter_colunas(df):
     # Inicializar o geocodificador
     geolocator = Nominatim(user_agent="app")
 
-    def geocode_address(endereco):
+    def geocode_address(endereco, index, total_rows):
         try:
+            print(f"Processando linha {index + 1} de {total_rows}...")
+            start_time = time.time()
+            
             location = geolocator.geocode(endereco)
+            
             if location:
+                elapsed_time = time.time() - start_time
+                print(f"Linha {index + 1} - Coordenadas encontradas: {location.latitude}, {location.longitude}. Tempo gasto: {elapsed_time:.2f} segundos.")
                 return location.latitude, location.longitude
             else:
+                print(f"Linha {index + 1} - Coordenadas não encontradas.")
                 return None, None
         except Exception as e:
-            print(f"Erro ao geocodificar o endereço {endereco}: {e}")
+            print(f"Linha {index + 1} - Erro ao geocodificar o endereço: {endereco}. Erro: {e}")
             return None, None
 
-    # Aplicar geocodificação para os endereços de origem e destino no DataFrame
-    df['LatOrigem'], df['LonOrigem'] = zip(*df.apply(lambda row: geocode_address(f"{row['RuaOrigem']}, São Paulo, Brasil"), axis=1))
-    df['LatDestino'], df['LonDestino'] = zip(*df.apply(lambda row: geocode_address(f"{row['RuaDestino']}, São Paulo, Brasil"), axis=1))
+    # Total de linhas no DataFrame
+    total_rows = len(df)
+
+    # Aplicar a função de geocodificação com contagem de progresso
+    df['LatOrigem'], df['LonOrigem'] = zip(*df.apply(lambda row: geocode_address(f"{row['RuaOrigem']}, São Paulo, Brasil", row.name, total_rows), axis=1))
+    df['LatDestino'], df['LonDestino'] = zip(*df.apply(lambda row: geocode_address(f"{row['RuaDestino']}, São Paulo, Brasil", row.name, total_rows), axis=1))
 
     # Adicionar colunas para dia da semana, semana do mês e mês do ano
     df['DiaSemana'] = df['DataHora'].dt.day_name()

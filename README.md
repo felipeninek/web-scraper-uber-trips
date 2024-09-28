@@ -1,7 +1,6 @@
 # web-scraper-uber-trips
 
 README - Criação e Uso do Executável
-Descrição
 
 Este projeto realiza o scraping de dados e o pré-processamento das informações coletadas. O objetivo é extrair dados de relatórios, processá-los e salvá-los em arquivos CSV. O projeto utiliza Selenium para scraping e Pandas para manipulação de dados. Este README fornece instruções sobre como configurar o ambiente, instalar as dependências, criar o executável e executar o projeto.
 
